@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcryptjs'
 
 @Injectable()
 export class UsersService {
@@ -27,5 +28,19 @@ export class UsersService {
     .execute()
     return data 
   }
-  async getuser(){}
-}
+  async creatuser(user:CreateUserDto):Promise<User>{
+    let pwd =user.password
+    pwd = await bcrypt.hash(pwd,10)
+    user.password = pwd;
+    return this.userRepo.save(user);
+  }
+  // async createrole(role:CreateRoleDto){}
+
+  async createtask(task:CreateTaskDto):Promise<Tasks>{
+    
+    return this.taskRepo.save(task);
+  }
+//    async createstatus(status:CreateStatusDto):Promise<Status>{
+//     return this.statusrepo.save(status)
+//    }
+ }

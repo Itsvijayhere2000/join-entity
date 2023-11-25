@@ -14,7 +14,6 @@ export class UsersController {
  
   @Get('getAllTask')
   async getAllTask(@Res() res: Response, @Req() req: Request)
-
   {
     try {
     let data= await this.usersService.getAllTask()
@@ -28,6 +27,16 @@ export class UsersController {
     }
     catch (error){
       console.log(error);
+    {
+      try {
+      let data= await this.usersService.getAllTask()
+      res.status(HttpStatus.OK).json({
+        success: true,
+        data: data,
+      })
+      }
+      catch (error){
+        console.log(error);
       
       res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
         success:false,
@@ -35,7 +44,29 @@ export class UsersController {
       })
 
 
+    }
+    }
+  }
+  }
+  
+  @Post('createuser')
+  async createuser(@Req() req:Request, @Res() res:Response, @Body() data:CreateUserDto){
+    try{
       
+      data['createdBy']=1
+     const user= await this.usersService.creatuser(data);
+     console.log('user',user);
+     res.status(HttpStatus.OK).json({
+      message:'THE USER CREATED SUCCESSFULLY'
+    });
+  }
+    catch(error){
+      console.log(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message:'Somthing went worng'
+      });
+      
+
     }
   }
 }
