@@ -35,3 +35,13 @@ export class CreateTaskDto{
 
 
 }
+export class CreateStatusDto{
+    @ApiProperty()
+    status: string;
+
+}
+export class CreateRoleDto{
+    @ApiProperty()
+    role: string;
+
+}

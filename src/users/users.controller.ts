@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express'; 
 
@@ -52,4 +52,65 @@ export class UsersController {
 
     }
   }
+  @Post('createstatus')
+  async createstatus(@Req() req:Request, @Res() res:Response, @Body() data:CreateStatusDto){
+    try{
+      
+      data['createdBy']=1
+     const user= await this.usersService.createstatus(data);
+     console.log('user',user);
+     res.status(HttpStatus.OK).json({
+      message:'THE STATUS CREATED SUCCESSFULLY'
+    });
+  }
+    catch(error){
+      console.log(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message:'Somthing went worng'
+      });
+      
+
+    }
+  }
+  @Post('createrole')
+  async createrole(@Req() req:Request, @Res() res:Response, @Body() data:CreateRoleDto){
+    try{
+      
+      data['createdBy']=1
+     const user= await this.usersService.createrole(data);
+     console.log('user',user);
+     res.status(HttpStatus.OK).json({
+      message:'THE ROLE CREATED SUCCESSFULLY'
+    });
+  }
+    catch(error){
+      console.log(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message:'Somthing went worng'
+      });
+      
+
+    }
+  }
+  @Post('createtask')
+  async createtask(@Req() req:Request, @Res() res:Response, @Body() data:CreateTaskDto){
+    try{
+      
+      data['createdBy']=1
+     const user= await this.usersService.createtask(data);
+     console.log('user',user);
+     res.status(HttpStatus.OK).json({
+      message:'THE ROLE CREATED SUCCESSFULLY'
+    });
+  }
+    catch(error){
+      console.log(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message:'Somthing went worng'
+      });
+      
+
+    }
+  }
+
 }
