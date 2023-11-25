@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -34,4 +34,13 @@ export class UsersService {
     user.password = pwd;
     return this.userRepo.save(user);
   }
-}
+  // async createrole(role:CreateRoleDto){}
+
+  async createtask(task:CreateTaskDto):Promise<Tasks>{
+    
+    return this.taskRepo.save(task);
+  }
+//    async createstatus(status:CreateStatusDto):Promise<Status>{
+//     return this.statusrepo.save(status)
+//    }
+ }
