@@ -3,10 +3,13 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express'; 
+import { EmailService } from 'src/email/email.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService,
+    private readonly emailService:EmailService,
+    ) {}
 
  
   @Get('getAllTask')
@@ -15,9 +18,12 @@ export class UsersController {
   {
     try {
     let data= await this.usersService.getAllTask()
+
+    // await this.emailService.sendMail()
     res.status(HttpStatus.OK).json({
       success: true,
       data: data,
+      
     })
     }
     catch (error){

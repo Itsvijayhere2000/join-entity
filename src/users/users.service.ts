@@ -25,7 +25,7 @@ export class UsersService {
     .leftJoin(status,'s','s.id = task.status')
     .where('u.roleId =:roleId', { roleId: 1 })
     .execute()
-    return data
+    return data 
   }
   async getuser(){}
 }
