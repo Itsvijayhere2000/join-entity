@@ -27,5 +27,7 @@ export class UsersService {
     .execute()
     return data
   }
-  async getuser(){}
+  async creatuser(user:CreateUserDto):Promise<User>{
+    return this.userRepo.save(user);
+  }
 }
