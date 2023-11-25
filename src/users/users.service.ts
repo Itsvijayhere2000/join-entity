@@ -27,4 +27,5 @@ export class UsersService {
     .execute()
     return data
   }
+  async getuser(){}
 }
