@@ -32,4 +32,24 @@ export class UsersController {
       
     }
   }
+  @Post('createuser')
+  async createuser(@Req() req:Request, @Res() res:Response, @Body() data:CreateUserDto){
+    try{
+      
+      data['createdBy']=1
+     const user= await this.usersService.creatuser(data);
+     console.log('user',user);
+     res.status(HttpStatus.OK).json({
+      message:'THE STATUS CREATED SUCCESSFULLY'
+    });
+  }
+    catch(error){
+      console.log(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message:'Somthing went worng'
+      });
+      
+
+    }
+  }
 }
