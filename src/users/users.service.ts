@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
+import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles, Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -83,6 +83,48 @@ export class UsersService {
     .execute();
     return data;
   }
+  async login(login:CreateLoginDto):Promise<string>{
+
+    let emailverify=login.email
+    console.log('emailverify',emailverify);
+    
+    let data= await this.userRepo
+    .createQueryBuilder('user')
+    .select('user.email as email ')
+    .addSelect('user.password') 
+    .where('user.email=:email',{email:emailverify})
+    .getOne();
+  console.log(data,'data');
+  
+    if(data){
+         console.log('dfdaaadadssa');
+        let passwordCheck = await bcrypt.compare(
+          login.password,
+          data.password
+        )         
+
+        if (passwordCheck){
+          console.log('sucess');
+          return 'Login successful';
+          
+        }
+        else {
+          console.log('passwwronggg')
+          return 'Password is incorrect. Login failed.';
+        }
+    }
+    else{
+      console.log('nope email')
+      return 'Email not found. Login failed.';
+    }
+    
+  }
+
+  // comparePasswords(inputPassword: string, hashedPassword: string): Promise<boolean> {
+  //   throw new Error('Function not implemented.');
+  // }
 
 }
+
+
 

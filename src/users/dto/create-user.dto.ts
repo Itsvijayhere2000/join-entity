@@ -45,3 +45,9 @@ export class CreateRoleDto{
     role: string;
 
 }
+export class CreateLoginDto{
+    @ApiProperty()
+    email:string;
+    @ApiProperty()
+    password:string;
+}

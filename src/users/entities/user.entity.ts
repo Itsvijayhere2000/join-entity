@@ -155,3 +155,4 @@ export class Roles {
     deletedBy: number;
 
   }
+  

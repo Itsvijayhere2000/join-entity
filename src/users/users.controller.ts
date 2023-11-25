@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
+import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express'; 
 import { EmailService } from 'src/email/email.service';
@@ -185,6 +185,24 @@ res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
     }
   }
 
-  
+  @Post('login')
+  async login(@Req() req:Request, @Res() res:Response, @Body() data:CreateLoginDto){
+    try{
+      
+    
+     const user= await this.usersService.login(data);
+     res.status(HttpStatus.OK).json({
+      message:'THE LOGGED IN SUCCESSFULLY',
+      data:user
+    });
+  }
+    catch(error){
+      console.log(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message:'Somthing went worng'
+      });
+      
 
+    }
+  }
 }
