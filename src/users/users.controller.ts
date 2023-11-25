@@ -26,27 +26,14 @@ export class UsersController {
     })
     }
     catch (error){
-      console.log(error);
     {
-      try {
-      let data= await this.usersService.getAllTask()
-      res.status(HttpStatus.OK).json({
-        success: true,
-        data: data,
-      })
-      }
-      catch (error){
         console.log(error);
-      
       res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
         success:false,
         message:'Error In Getting User Data'
-      })
-
-
+      });
     }
     }
-  }
   }
   
   @Post('createuser')
