@@ -38,4 +38,58 @@ export class UsersController {
       
     }
   }
+
+
+  @Get('getAllrole')
+  async getAllrole(@Req() req:Request,@Res() res:Response){
+    try{
+const data=await this.usersService.getAllrole()
+res.status(HttpStatus.OK).json({
+  success:true,
+  data:data,
+})
+    }
+    catch(error){
+res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
+  success:false,
+  message:'error in getting role data'
+})
+    }
+  }
+
+  @Get('getAllstatus')
+  async getAllstatus(@Req() req:Request,@Res() res:Response){
+    try{
+const data=await this.usersService.getAllstatus()
+res.status(HttpStatus.OK).json({
+  success:true,
+  data:data,
+})
+    }
+    catch(error){
+res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
+  success:false,
+  message:'error in getting status data'
+})
+    }
+  }
+
+  @Get('getAllusers')
+  async getAllusers(@Req() req:Request,@Res() res:Response){
+    try{
+const data=await this.usersService.getAllusers()
+res.status(HttpStatus.OK).json({
+  success:true,
+  data:data,
+})
+    }
+    catch(error){
+res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
+  success:false,
+  message:'error in getting users data'
+})
+    }
+  }
+
+  
 }

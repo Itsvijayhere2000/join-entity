@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Tasks, User,status } from './entities/user.entity';
+import { Roles, Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -12,8 +12,9 @@ export class UsersService {
    private userRepo: Repository<User>,
    @InjectRepository(Tasks)
    private taskRepo: Repository<Tasks>,
-   @InjectRepository(Tasks)
-   private statusrepo: Repository<status>){
+   @InjectRepository(status)
+   private statusrepo: Repository<status>,@InjectRepository(Roles)
+   private rolerepo: Repository<Roles>){
 
   }
 
@@ -27,5 +28,31 @@ export class UsersService {
     .execute()
     return data 
   }
-  async getuser(){}
+  async getAllrole(){
+    let data = await this.rolerepo
+    .createQueryBuilder('role')
+    .select(`role.id as roleId,role.role as role`)
+    .execute()
+    return data
+  }
+
+
+   async getAllstatus(){
+    const data = await this.statusrepo
+    .createQueryBuilder('status')
+    .select(`status.id as statusId,status.status as status`)
+    .execute();
+    return data;
+   }
+
+
+  async getAllusers(){
+    const data = await this.userRepo
+    .createQueryBuilder('user')
+    .select(`user.id as userId,user.Name as name,user.email as email,r.id as roleId`)
+    .leftJoin(Roles,'r','r.id=user.roleid')
+    .execute();
+    return data;
+  }
+
 }
