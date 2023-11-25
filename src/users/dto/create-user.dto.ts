@@ -10,4 +10,6 @@ export class CreateUserDto {
     @ApiProperty()
     password: string;
 
+    
+
 }

@@ -12,16 +12,16 @@ export class UsersController {
   @Get('getAllTask')
   async getAllTask(@Res() res: Response, @Req() req: Request)
 
-  {
-    try {
-    let data= await this.usersService.getAllTask()
-    res.status(HttpStatus.OK).json({
-      success: true,
-      data: data,
-    })
-    }
-    catch (error){
-      console.log(error);
+    {
+      try {
+      let data= await this.usersService.getAllTask()
+      res.status(HttpStatus.OK).json({
+        success: true,
+        data: data,
+      })
+      }
+      catch (error){
+        console.log(error);
       
       res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
         success:false,
@@ -40,7 +40,7 @@ export class UsersController {
      const user= await this.usersService.creatuser(data);
      console.log('user',user);
      res.status(HttpStatus.OK).json({
-      message:'THE STATUS CREATED SUCCESSFULLY'
+      message:'THE USER CREATED SUCCESSFULLY'
     });
   }
     catch(error){
