@@ -4,6 +4,8 @@ import { UsersController } from './users.controller';
 import { User,Roles,Tasks,status } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmailService } from 'src/email/email.service';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule ,ConfigService} from '@nestjs/config';
 
 @Module({
   controllers: [UsersController],
@@ -14,7 +16,15 @@ import { EmailService } from 'src/email/email.service';
       Roles,
       Tasks,
       status
-    ])
-  ]
+    ]),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('jwt.secret'),
+      }),
+      inject: [ConfigService],
+    }),
+  ],
+  
 })
 export class UsersModule {}

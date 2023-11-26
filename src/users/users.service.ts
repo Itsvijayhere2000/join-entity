@@ -5,6 +5,7 @@ import { Roles, Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs'
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
@@ -16,8 +17,10 @@ export class UsersService {
    @InjectRepository(Tasks)
    private statusrepo: Repository<status>,
    @InjectRepository(Roles)
-   private roleRepo:Repository<Roles>){
- 
+   private roleRepo:Repository<Roles>,
+   private jwtService: JwtService,
+   ){
+   
 
   }
 
@@ -83,46 +86,83 @@ export class UsersService {
     .execute();
     return data;
   }
-  async login(login:CreateLoginDto):Promise<string>{
+  // async login(login:CreateLoginDto):Promise<string>{
 
-    let emailverify=login.email
-    console.log('emailverify',emailverify);
+  //   let emailverify=login.email
+  //   console.log('emailverify',emailverify);
     
-    let data= await this.userRepo
-    .createQueryBuilder('user')
-    .select('user.email as email ')
-    .addSelect('user.password') 
-    .where('user.email=:email',{email:emailverify})
-    .getOne();
-  console.log(data,'data');
+  //   let data= await this.userRepo
+  //   .createQueryBuilder('user')
+  //   .select('user.email as email ')
+  //   .addSelect('user.password') 
+  //   .where('user.email=:email',{email:emailverify})
+  //   .getOne();
+  // console.log(data,'data');
   
-    if(data){
-         console.log('dfdaaadadssa');
-        let passwordCheck = await bcrypt.compare(
-          login.password,
-          data.password
-        )         
+  //   if(data){
+  //        console.log('dfdaaadadssa');
+  //       let passwordCheck = await bcrypt.compare(
+  //         login.password,
+  //         data.password
+  //       )         
 
-        if (passwordCheck){
-          console.log('sucess');
-          return 'Login successful';
+  //       if (passwordCheck){
+  //         console.log('sucess');
+  //         return 'Login successful';
           
-        }
-        else {
-          console.log('passwwronggg')
-          return 'Password is incorrect. Login failed.';
-        }
-    }
-    else{
-      console.log('nope email')
-      return 'Email not found. Login failed.';
-    }
+  //       }
+  //       else {
+  //         console.log('passwwronggg')
+  //         return 'Password is incorrect. Login failed.';
+  //       }
+  //   }
+  //   else{
+  //     console.log('nope email')
+  //     return 'Email not found. Login failed.';
+  //   }
     
-  }
-
-  // comparePasswords(inputPassword: string, hashedPassword: string): Promise<boolean> {
-  //   throw new Error('Function not implemented.');
   // }
+
+  async login(data) {
+    try {
+      let user = await this.userRepo.findOne({
+        where: {
+          email: data.email
+        },
+      });
+      console.log(user);
+      
+      if (user) {
+        let passwordMatch = await bcrypt.compare(data.password, user.password);
+  
+        if (passwordMatch) {
+          console.log('Login successful');
+          let payload = {
+            userName: user.Name, // Adjust to the actual property name in your user object
+            roleId: user.roleId,
+            email: user.email,
+            userId: user.id
+          };
+          let accessToken = this.jwtService.sign(payload);
+  
+          return { message: 'Login successful', user: payload, accessToken };
+        } else {
+          console.log('Incorrect password');
+          return { message: 'Password is incorrect. Login failed.' };
+        }
+      } else {
+        console.log('Email not found');
+        return { message: 'Email not found. Login failed.' };
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      return { message: 'Something went wrong. Login failed.' };
+    }
+  }
+  
+  
+ 
+
 
 }
 

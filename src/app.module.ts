@@ -7,11 +7,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { EmailService } from './email/email.service';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { JwtStrategyService } from './jwt-strategy/jwt-strategy.service';
+import config from './configuration'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
+      load: [config],
+      isGlobal: true,
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -49,6 +53,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService],
+  providers: [AppService, EmailService, JwtStrategyService],
 })
 export class AppModule {}

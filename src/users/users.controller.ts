@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, HttpStatus ,UseGuards} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express'; 
 import { EmailService } from 'src/email/email.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -13,6 +14,8 @@ export class UsersController {
 
  
   @Get('getAllTask')
+  // @UseGuards(AuthGuard('jwt'))
+
   async getAllTask(@Res() res: Response, @Req() req: Request)
   {
     try {
@@ -173,23 +176,27 @@ res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
   }
 
   @Post('login')
-  async login(@Req() req:Request, @Res() res:Response, @Body() data:CreateLoginDto){
-    try{
-      
+async login(@Req() req: Request, @Res() res: Response, @Body() data: CreateLoginDto) {
+  try {
+    const userResponse = await this.usersService.login(data);
     
-     const user= await this.usersService.login(data);
-     res.status(HttpStatus.OK).json({
-      message:'THE LOGGED IN SUCCESSFULLY',
-      data:user
+    if (userResponse.message === 'Login successful') {
+      res.status(HttpStatus.OK).json({
+        message: 'Login successful',
+        data: userResponse.user, // Sending user details in the response
+        token:userResponse.accessToken
+      });
+    } else {
+      res.status(HttpStatus.UNAUTHORIZED).json({
+        message: userResponse.message
+      });
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'Something went wrong. Login failed.'
     });
   }
-    catch(error){
-      console.log(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message:'Somthing went worng'
-      });
-      
+}
 
-    }
-  }
 }
