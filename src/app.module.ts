@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { EmailService } from './email/email.service';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { JwtStrategyService } from './jwt-strategy/jwt-strategy.service';
 import config from './configuration'
 
 @Module({
@@ -30,6 +29,7 @@ import config from './configuration'
       // synchronize: true,
       autoLoadEntities: true,
     }),
+   
 
     MailerModule.forRoot({
       transport:{
@@ -53,6 +53,6 @@ import config from './configuration'
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService, JwtStrategyService],
+  providers: [AppService, EmailService],
 })
 export class AppModule {}

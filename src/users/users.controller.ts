@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 import { EmailService } from 'src/email/email.service';
 import { AuthGuard } from '@nestjs/passport';
 
+// @UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService,
@@ -14,7 +15,6 @@ export class UsersController {
 
  
   @Get('getAllTask')
-  // @UseGuards(AuthGuard('jwt'))
 
   async getAllTask(@Res() res: Response, @Req() req: Request)
   {

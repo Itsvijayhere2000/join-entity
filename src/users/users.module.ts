@@ -5,11 +5,11 @@ import { User,Roles,Tasks,status } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmailService } from 'src/email/email.service';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule ,ConfigService} from '@nestjs/config';
+import { JwtStrategyService } from 'src/jwt-strategy/jwt-strategy.service';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService,EmailService],
+  providers: [UsersService,EmailService,JwtStrategyService],
   imports: [
     TypeOrmModule.forFeature([
       User,
@@ -17,13 +17,13 @@ import { ConfigModule ,ConfigService} from '@nestjs/config';
       Tasks,
       status
     ]),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('jwt.secret'),
-      }),
-      inject: [ConfigService],
+    JwtModule.register({
+      secret: 'g25f87b6-7a31-4921-ba27-231a935e1148',
+      signOptions: {
+        expiresIn: '5d',
+      },
     }),
+   
   ],
   
 })
