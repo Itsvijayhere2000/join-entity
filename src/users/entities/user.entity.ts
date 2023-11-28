@@ -26,6 +26,12 @@ export class User {
     @JoinColumn({ name: 'roleId' })
     roleId: number;
 
+    @Column()
+    otp:number;
+
+    @Column({default:0})
+    isActive:number
+
     @CreateDateColumn()
     createdAt: Date;
   

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
+import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto, VerifyDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles, Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt';
+import { EmailService } from 'src/email/email.service';
+import { string } from 'yargs';
 
 @Injectable()
 export class UsersService {
@@ -159,8 +161,57 @@ export class UsersService {
       return { message: 'Something went wrong. Login failed.' };
     }
   }
+
+
+  async signup(data:CreateUserDto){
+let emailcheck=data.email;
+console.log(emailcheck)
+const user=await this.userRepo
+.createQueryBuilder('user')
+.select('user.email')
+.where('user.email=:email',{email:emailcheck})
+.getOne()
+console.log(user)
+if(user){
+
+  console.log("email is existed")
+}
+else{
+
+  console.log('email is not exist');
+    const obj=new EmailService();
+    let otpdb=await obj.sendMail();
+    data['otp']=otpdb;
+    this.userRepo.save(data);
+    console.log(otpdb)
+}
+ 
+  }
+
+
+  async verify(data:VerifyDto){
+    // console.log(data)
+    const user=await this.userRepo
+.createQueryBuilder('user')
+.select('user.id')
+.where('user.otp=:otp',{otp:data.otp})
+.getOne();
+// console.log(user.id)
+// console.log(user)
+
+if(user){
+  console.log(user)
+  user['isActive']=1;
+  this.userRepo.save(user);
+  return "User verified successfully"
+}
+else{
+  console.log('wrong otp')
+}
+}
+
   
-  
+
  
 
 
