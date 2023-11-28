@@ -131,6 +131,8 @@ export class UsersService {
         where: {
           email: data.email
         },
+        loadRelationIds: true
+
       });
       console.log(user);
       

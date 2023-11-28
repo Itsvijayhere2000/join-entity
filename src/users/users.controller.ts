@@ -17,7 +17,7 @@ export class UsersController {
 
  
   @Get('getAllTask')
-
+   @UseGuards(AuthGuard('jwt'))
   async getAllTask(@Res() res: Response, @Req() req: Request)
   {
     try {
