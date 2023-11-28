@@ -192,4 +192,22 @@ res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
 
     }
   }
+
+
+  @Get('signup')
+  async signup(@Req() req:Request,@Res() res:Response,@Body() data:CreateUserDto){
+    try{ 
+      const user=await this.usersService.signup(data);
+      res.status(HttpStatus.OK).json({
+        message:'SIGNED UP SUCCESSFULLY'
+      });
+    }
+    catch(error){
+      console.log(error)
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message:'SOMETHING WENT WRONG'
+      });
+
+    }
+  }
 }

@@ -120,6 +120,16 @@ export class UsersService {
     
   }
 
+
+  signup(data){
+    let sign=this.userRepo
+    .createQueryBuilder('user')
+    .select('user.email')
+    .where('user.email=:email',{email:data.email})
+
+  
+  }
+
   // comparePasswords(inputPassword: string, hashedPassword: string): Promise<boolean> {
   //   throw new Error('Function not implemented.');
   // }
