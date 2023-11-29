@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, HttpStatus ,UseGuards, Put} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto, VerifyDto } from './dto/create-user.dto';
+import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto, VerifyDto, changepassDto, forgotDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express'; 
 import { EmailService } from 'src/email/email.service';
@@ -235,6 +235,40 @@ async verifyuser(@Req() req:Request,@Res() res:Response,@Body() data:VerifyDto){
       });
     
     }
+}
+
+@Put('forgot')
+async forgot(@Req() req:Request,@Res() res:Response,@Body() data:forgotDto){
+  try{
+    const user= await this.usersService.forgotpassword(data);
+    res.status(HttpStatus.OK).json({
+      message:"otp sent successfully"
+    });
+  }
+  catch(error){
+    console.log(error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message:'otp not sent'
+    });
+
+  }
+}
+
+@Put('changePassword')
+async changePassword(@Req() req:Request,@Res() res:Response,@Body() data:changepassDto){
+  try{
+    const user= await this.usersService.changePassword(data);
+    res.status(HttpStatus.OK).json({
+      message:"Password sent successfully"
+    });
+  }
+  catch(error){
+    console.log(error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message:'Password  not sent'
+    });
+
+  }
 }
 
 }

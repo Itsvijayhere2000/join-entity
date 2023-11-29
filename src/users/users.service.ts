@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto, VerifyDto } from './dto/create-user.dto';
+import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto, VerifyDto, changepassDto, forgotDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles, Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -214,8 +214,52 @@ else{
 
   
 
- 
+async forgotpassword(data:forgotDto){
 
+  console.log(data.email)
+const mail=await this.userRepo
+.createQueryBuilder('user')
+.select('user.email,user.id')
+.where('user.email=:mailId ',{mailId:data.email})
+.andWhere('user.isActive = :value', { value: 1})
+.execute();
+console.log(mail);
+if(mail.length>0){
+  console.log("user is matched"); 
+console.log(data);
+
+  const obj=new EmailService();
+    let otpdb=await obj.sendMail();
+    let newotp={}
+    newotp['otp']=otpdb;
+    console.log(newotp)
+    await this.userRepo.update({id:mail[0].id},newotp);
+    console.log(otpdb);
+}
+else{
+  console.log("Not an User")
+}
+}
+
+
+async changePassword(data:changepassDto){
+
+  
+console.log(data)
+  const changepass=await this.userRepo
+  .createQueryBuilder('user')
+  .select('user.id')
+  .where('user.otp=:otp',{otp:data.otp})
+  .getOne();
+  console.log(changepass)
+  // let newpass:string=data.password
+  if(changepass){
+    console.log("password changed successfully")
+  }
+  else{
+    console.log("invalid password")
+  }
+}
 
 }
 

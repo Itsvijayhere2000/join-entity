@@ -60,3 +60,14 @@ export class VerifyDto{
     @ApiProperty()
     otp:number
 }
+
+export class forgotDto{
+    @ApiProperty()
+    email:string;
+}
+
+export class changepassDto{
+    @ApiProperty()
+    otp:number;
+    
+}
