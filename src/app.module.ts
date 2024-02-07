@@ -7,7 +7,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { EmailService } from './email/email.service';
 import { MailerModule } from '@nestjs-modules/mailer';
-import config from './configuration'
+import config from './configuration';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import * as nodemailer from 'nodemailer'
+
 
 @Module({
   imports: [
@@ -28,27 +31,6 @@ import config from './configuration'
       },
       // synchronize: true,
       autoLoadEntities: true,
-    }),
-   
-
-    MailerModule.forRoot({
-      transport:{
-        host: process.env.MAIL_HOST,
-        // service:'gmail',
-        port:465,
-        secure: true,
-        auth:{
-          user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASSWORD,
-        },
-        tls: {
-          ciphers: 'SSLv3',
-        },
-      },
-     
-      // defaults: {
-      //   from: '"No Reply" <noreply@example.com>',
-      // },
     }),
     UsersModule,
   ],

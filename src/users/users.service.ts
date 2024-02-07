@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto } from './dto/create-user.dto';
+import { CreateLoginDto, CreateRoleDto, CreateStatusDto, CreateTaskDto, CreateUserDto, VerifyDto, changepassDto, forgotDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles, Tasks, User,status } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt';
+import { EmailService } from 'src/email/email.service';
+import { string } from 'yargs';
 
 @Injectable()
 export class UsersService {
@@ -161,10 +163,103 @@ export class UsersService {
       return { message: 'Something went wrong. Login failed.' };
     }
   }
-  
-  
- 
 
+
+  async signup(data:CreateUserDto){
+let emailcheck=data.email;
+console.log(emailcheck)
+const user=await this.userRepo
+.createQueryBuilder('user')
+.select('user.email')
+.where('user.email=:email',{email:emailcheck})
+.getOne()
+console.log(user)
+if(user){
+
+  console.log("email is existed")
+}
+else{
+
+  console.log('email is not exist');
+    const obj=new EmailService();
+    let otpdb=await obj.sendMail();
+    data['otp']=otpdb;
+    this.userRepo.save(data);
+    console.log(otpdb)
+}
+ 
+  }
+
+
+  async verify(data:VerifyDto){
+    // console.log(data)
+    const user=await this.userRepo
+.createQueryBuilder('user')
+.select('user.id')
+.where('user.otp=:otp',{otp:data.otp})
+.getOne();
+// console.log(user.id)
+// console.log(user)
+
+if(user){
+  console.log(user)
+  user['isActive']=1;
+  this.userRepo.save(user);
+  return "User verified successfully"
+}
+else{
+  console.log('wrong otp')
+}
+}
+
+  
+
+async forgotpassword(data:forgotDto){
+
+  console.log(data.email)
+const mail=await this.userRepo
+.createQueryBuilder('user')
+.select('user.email,user.id')
+.where('user.email=:mailId ',{mailId:data.email})
+.andWhere('user.isActive = :value', { value: 1})
+.execute();
+console.log(mail);
+if(mail.length>0){
+  console.log("user is matched"); 
+console.log(data);
+
+  const obj=new EmailService();
+    let otpdb=await obj.sendMail();
+    let newotp={}
+    newotp['otp']=otpdb;
+    console.log(newotp)
+    await this.userRepo.update({id:mail[0].id},newotp);
+    console.log(otpdb);
+}
+else{
+  console.log("Not an User")
+}
+}
+
+
+async changePassword(data:changepassDto){
+
+  
+console.log(data)
+  const changepass=await this.userRepo
+  .createQueryBuilder('user')
+  .select('user.id')
+  .where('user.otp=:otp',{otp:data.otp})
+  .getOne();
+  console.log(changepass)
+  // let newpass:string=data.password
+  if(changepass){
+    console.log("password changed successfully")
+  }
+  else{
+    console.log("invalid password")
+  }
+}
 
 }
 

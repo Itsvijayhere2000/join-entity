@@ -13,6 +13,8 @@ export class CreateUserDto {
     @ApiProperty()
     roleId:number
 
+    @ApiProperty()
+    otp:number;
 }
 export class CreateTaskDto{
     @ApiProperty()
@@ -50,4 +52,22 @@ export class CreateLoginDto{
     email:string;
     @ApiProperty()
     password:string;
+}
+
+export class VerifyDto{
+
+
+    @ApiProperty()
+    otp:number
+}
+
+export class forgotDto{
+    @ApiProperty()
+    email:string;
+}
+
+export class changepassDto{
+    @ApiProperty()
+    otp:number;
+    
 }
