@@ -5,8 +5,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express'; 
 import { EmailService } from 'src/email/email.service';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 // @UseGuards(AuthGuard('jwt'))
+// @ApiTags('admin')
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService,
@@ -17,7 +20,11 @@ export class UsersController {
   @Get('getAllTask')
    @UseGuards(AuthGuard('jwt'))
   async getAllTask(@Res() res: Response, @Req() req: Request)
+    
   {
+    const userId = req['user']['userId'];
+    console.log('dataa',userId);
+    
     try {
     let data= await this.usersService.getAllTask()
 

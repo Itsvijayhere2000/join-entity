@@ -14,7 +14,7 @@ export class UsersService {
    private userRepo: Repository<User>,
    @InjectRepository(Tasks)
    private taskRepo: Repository<Tasks>,
-   @InjectRepository(Tasks)
+   @InjectRepository(status)
    private statusrepo: Repository<status>,
    @InjectRepository(Roles)
    private roleRepo:Repository<Roles>,
@@ -73,7 +73,7 @@ export class UsersService {
     const data = await this.statusrepo
     .createQueryBuilder('status')
     .select(`status.id as statusId,status.status as status`)
-    .execute();
+    .getRawMany();
     return data;
    }
 
